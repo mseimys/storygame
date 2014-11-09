@@ -1,0 +1,94 @@
+<template name="storiesList">
+    <div class="col-md-12">
+        <h3>Available stories</h3>
+        {{#each stories}}
+            {{> storyItem}}
+        {{/each}}
+        {{> newStory}}
+    </div>
+</template>
+
+<template name="newStory">
+    <br>
+    <h3>Create your own story!</h3>
+    <form class="form-inline" role="form">
+        <div class="form-group">
+            <label class="sr-only">Title</label>
+            <p class="form-control-static">Enter title:</p>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" id="new_story_title" placeholder="Title">
+        </div>
+        <button type="submit" id="create_story" class="btn btn-default">Create!</button>
+    </form>
+</template>
+
+<template name="storyItem">
+    <div class="story">
+        <div class="post-content">
+            <h4><a href="{{pathFor 'storyPage'}}">{{title}}</a>
+                <small>{{#if authors}}by {{#each authors}}{{this}}, {{/each}}{{/if}}{{number_of_sentences}} sentences</small></h4>
+        </div>
+    </div>
+</template>
+
+<template name="storyPage">
+    <div class="col-md-12 well">
+        <h1>{{title}}</h1>
+        {{#each sentences}}
+            {{this}}
+        {{/each}}
+    </div>
+    <div style="display: none">
+        {{#each words}}
+            {{> word}}
+        {{/each}}
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-2">
+                {{#if words}}
+                {{#with lastWord words}}
+                    <p class="text-danger">Previous word by {{user}}</p>
+                    <p><span class="lastword">{{text}}</span></p>
+                {{/with}}
+                {{else}}
+                    <p class="text-danger">No previous word</p>
+                    <p class="text-success">Start the sentence!</p>
+                {{/if}}
+            </div>
+            <div class="col-md-5">
+                <p>Your word</p>
+                <input id="new_word_text" type="text" class="form-control {{isDisabled}}" placeholder="Enter word here">
+                {{#if active_user}}Locked by {{active_user}} (auto unlocks in 5s){{/if}}
+            </div>
+            <div class="col-md-5">
+                {{> name_form}}
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px">
+            <div class="panel panel-info">
+            <div class="panel-heading">
+            <h3 class="panel-title">Rules of the game</h3>
+            </div>
+            <div class="panel-body">
+            You can only see a single word that was entered before.
+            Sentence is added to the story when your word ends with symbols . ? !
+            </div>
+            </div>
+        </div>
+    </div>
+
+</template>
+
+<template name="word">
+    <div class="word {{selected}}">
+        <div class="text">{{text}}</div>
+        <div class="user">{{user}}</div>
+    </div>
+</template>
+
+<template name="name_form">
+    <p>Your name</p>
+    <input type="text" class="form-control {{#if current_user}}{{else}}disabled{{/if}}" id="storyteller" placeholder="Enter your name here" value="{{ current_user }}">
+</template>
